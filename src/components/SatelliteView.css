@@ -1,0 +1,444 @@
+.satellite-view {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  padding: 20px;
+  padding-top: 80px;
+}
+
+.satellite-header {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateX(-5px);
+}
+
+.satellite-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin: 0;
+}
+
+.satellite-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* 標籤切換 */
+.tab-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tab-button:hover {
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-button.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* 天氣警特報 */
+.warnings-section {
+  width: 100%;
+}
+
+.no-warnings {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-warnings-sub {
+  margin-top: 10px;
+  color: #999;
+  font-size: 14px;
+}
+
+.warnings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.warning-item {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+  border-left: 4px solid #e74c3c;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.warning-icon {
+  font-size: 48px;
+}
+
+.warning-title h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.warning-type {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.warning-info {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.warning-time {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+}
+
+/* 數值預報 */
+.forecast-section {
+  width: 100%;
+}
+
+.no-forecast {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.forecast-data {
+  width: 100%;
+}
+
+.forecast-location {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.forecast-elements {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.forecast-element {
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.element-name {
+  font-size: 18px;
+  color: #667eea;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.element-times {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.time-item {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.time-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.time-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.satellite-info {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  padding: 15px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 15px;
+  width: 100%;
+}
+
+.satellite-info p {
+  margin: 5px 0;
+}
+
+.satellite-info a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.satellite-info a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .satellite-view {
+    padding: 10px;
+    padding-top: 60px;
+  }
+  
+  .satellite-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .satellite-title {
+    font-size: 24px;
+  }
+  
+  .satellite-content {
+    padding: 20px;
+  }
+}
+
+/* 錯誤處理樣式 */
+.satellite-loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.satellite-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #e74c3c;
+}
+
+.error-solution {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 15px;
+  color: #555;
+}
+
+.error-solution p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.error-links {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.error-link {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.error-link:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.warnings-iframe-fallback,
+.forecast-iframe-fallback {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 15px;
+}
+
+.warnings-iframe-fallback p,
+.forecast-iframe-fallback p {
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 14px;
+}
+
+.warnings-iframe,
+.forecast-iframe,
+.typhoon-iframe {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: #f5f5f5;
+}
+
+/* 颱風資訊樣式 */
+.typhoon-section {
+  width: 100%;
+}
+
+.no-typhoon {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-typhoon-sub {
+  margin-top: 10px;
+  color: #999;
+  font-size: 14px;
+}
+
+.typhoon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.typhoon-item {
+  background: linear-gradient(135deg, #fff9e5 0%, #ffe5e5 100%);
+  border-left: 4px solid #f39c12;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.typhoon-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.typhoon-icon {
+  font-size: 48px;
+}
+
+.typhoon-title h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.typhoon-number {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #f39c12;
+  font-weight: 600;
+}
+
+.typhoon-info,
+.typhoon-forecast {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.typhoon-info p,
+.typhoon-forecast p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.typhoon-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f39c12;
+  margin-bottom: 10px;
+  margin-top: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(243, 156, 18, 0.3);
+}
+
+.typhoon-iframe-fallback {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 15px;
+}
+
+.typhoon-iframe-fallback p {
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 14px;
+}
+
