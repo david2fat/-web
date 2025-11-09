@@ -4,18 +4,20 @@
  */
 
 // 本地圖片路徑（支持男女不同圖案）
+// 使用 process.env.PUBLIC_URL 確保在開發和生產環境中都能正確載入
+const PUBLIC_URL = process.env.PUBLIC_URL || '';
 const LOCAL_IMAGES = {
   // 男性圖片
   MALE: {
-    SUNNY: '/images/sunny.png',
-    RAINY: '/images/rainy.png',
-    COOL: '/images/cool.png',
+    SUNNY: `${PUBLIC_URL}/images/sunny.png`,
+    RAINY: `${PUBLIC_URL}/images/rainy.png`,
+    COOL: `${PUBLIC_URL}/images/cool.png`,
   },
   // 女性圖片
   FEMALE: {
-    SUNNY: '/images/sunny2.png',
-    RAINY: '/images/rainy2.png',
-    COOL: '/images/cool2.png',
+    SUNNY: `${PUBLIC_URL}/images/sunny2.png`,
+    RAINY: `${PUBLIC_URL}/images/rainy2.png`,
+    COOL: `${PUBLIC_URL}/images/cool2.png`,
   },
 };
 

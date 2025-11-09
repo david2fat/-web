@@ -9,6 +9,7 @@ import {
 const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   // 組件掛載時預先下載所有穿搭類型
   useEffect(() => {
@@ -18,6 +19,7 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
   useEffect(() => {
     // 根據天氣獲取對應的穿搭類型頭像 URL
     setLoading(true);
+    setImageError(false);
     const outfitTypeKey = getOutfitTypeByWeather(weather);
     const url = generateOutfitAvatarUrl(outfitTypeKey, gender);
     
@@ -27,10 +29,11 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
     img.onload = () => {
       setAvatarUrl(url);
       setLoading(false);
+      setImageError(false);
     };
     img.onerror = () => {
-      // 如果載入失敗，仍然設置 URL 讓瀏覽器處理
-      setAvatarUrl(url);
+      // 如果載入失敗，設置錯誤狀態
+      setImageError(true);
       setLoading(false);
       console.warn('圖片載入失敗:', url);
     };
@@ -80,17 +83,18 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
         <div className="character-avatar">
           {loading ? (
             <div className="avatar-loading">載入中...</div>
+          ) : imageError ? (
+            <div className="avatar-fallback">👤</div>
           ) : (
             <img 
               src={avatarUrl} 
               alt="天氣穿搭角色" 
               className="avatar-image"
               key={avatarUrl} // 添加 key 確保圖片更新時重新渲染
-              onError={(e) => {
-                // 如果載入失敗，顯示備用方案
+              onError={() => {
+                // 如果載入失敗，設置錯誤狀態（使用 React 狀態而不是直接操作 DOM）
                 console.error('圖片載入錯誤:', avatarUrl);
-                e.target.style.display = 'none';
-                e.target.parentElement.innerHTML = '<div class="avatar-fallback">👤</div>';
+                setImageError(true);
               }}
             />
           )}
