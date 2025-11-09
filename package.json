@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "台灣天氣穿搭建議應用",
   "private": true,
-  "homepage": "https://david2fat.github.io/-web",
+  "homepage": ".",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
