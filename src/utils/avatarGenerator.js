@@ -48,8 +48,12 @@ const LOCAL_MEDIA = {
     },
     RAINY: {
       type: 'image',
-      url: `${PUBLIC_URL}/images/rainy2.png`,
-      // url: `${PUBLIC_URL}/videos/rainy2.mp4`,
+      // url: `${PUBLIC_URL}/images/rainy2.png`,
+      url: `${PUBLIC_URL}/videos/rainy2.mp4`,
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/rainy2.png`,
+      },
     },
     COOL: {
       type: 'image',
