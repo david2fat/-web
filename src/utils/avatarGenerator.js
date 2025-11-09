@@ -14,15 +14,17 @@ const LOCAL_MEDIA = {
   // 男性資源
   MALE: {
     SUNNY: {
-      type: 'image', // 或 'video'
-      url: `${PUBLIC_URL}/images/sunny.png`,
-      // 如果有影片，可以這樣配置：
-      // type: 'video',
-      // url: `${PUBLIC_URL}/videos/sunny.mp4`,
+      type: 'video',
+      url: `${PUBLIC_URL}/videos/sunny.mp4`,
+      // 如果影片載入失敗，會自動回退到圖片
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/sunny.png`,
+      },
     },
     RAINY: {
       type: 'video',
-      url: `${PUBLIC_URL}/videos/rainy.mp4`, // 正確的文件名應該是 rainy.mp4
+      url: `${PUBLIC_URL}/videos/rainy.mp4`,
       // 如果影片載入失敗，會自動回退到圖片
       fallback: {
         type: 'image',
@@ -42,23 +44,31 @@ const LOCAL_MEDIA = {
   // 女性資源
   FEMALE: {
     SUNNY: {
-      type: 'image',
-      url: `${PUBLIC_URL}/images/sunny2.png`,
-      // url: `${PUBLIC_URL}/videos/sunny2.mp4`,
+      type: 'video',
+      url: `${PUBLIC_URL}/videos/sunny2.mp4`,
+      // 如果影片載入失敗，會自動回退到圖片
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/sunny2.png`,
+      },
     },
     RAINY: {
-      type: 'image',
-      // url: `${PUBLIC_URL}/images/rainy2.png`,
+      type: 'video',
       url: `${PUBLIC_URL}/videos/rainy2.mp4`,
+      // 如果影片載入失敗，會自動回退到圖片
       fallback: {
         type: 'image',
         url: `${PUBLIC_URL}/images/rainy2.png`,
       },
     },
     COOL: {
-      type: 'image',
-      url: `${PUBLIC_URL}/images/cool2.png`,
-      // url: `${PUBLIC_URL}/videos/cool2.mp4`,
+      type: 'video',
+      url: `${PUBLIC_URL}/videos/cool2.mp4`,
+      // 如果影片載入失敗，會自動回退到圖片
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/cool2.png`,
+      },
     },
   },
 };
