@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import WeatherCard from './components/WeatherCard';
 import OutfitCharacter from './components/OutfitCharacter';
@@ -24,55 +24,7 @@ function App() {
   const [gender, setGender] = useState('male'); // 性別選擇：'male' 或 'female'
   const [showSatellite, setShowSatellite] = useState(false); // 是否顯示衛星雲圖頁面
 
-  useEffect(() => {
-    fetchWeather();
-    fetchForecast();
-  }, [location]);
-
-  const fetchWeather = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const data = await getCurrentWeather(location);
-      setWeather(data);
-    } catch (err) {
-      console.error('獲取天氣失敗:', err);
-      // 如果 API 失敗，使用模擬數據作為後備
-      const mockData = {
-        name: location,
-        main: {
-          temp: 15,
-          feels_like: 8,
-        },
-        weather: [{
-          main: 'Windy',
-          description: '風大',
-        }],
-        wind: {
-          speed: 5.5,
-        },
-      };
-      setWeather(mockData);
-      setError(`無法連接到天氣服務: ${err.message}，顯示模擬數據`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchForecast = async () => {
-    try {
-      const data = await getWeeklyForecast(location);
-      setForecast(data);
-    } catch (err) {
-      console.error('獲取天氣預報失敗:', err);
-      // 使用模擬數據作為後備
-      const mockForecast = generateMockForecast();
-      setForecast(mockForecast);
-    }
-  };
-
-  const generateMockForecast = () => {
+  const generateMockForecast = useCallback(() => {
     const weatherTypes = ['Clear', 'Clouds', 'Rain', 'Windy'];
     const descriptions = ['晴朗', '多雲', '下雨', '風大'];
     const list = [];
@@ -102,7 +54,56 @@ function App() {
     }
     
     return { list };
-  };
+  }, []);
+
+  const fetchWeather = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const data = await getCurrentWeather(location);
+      setWeather(data);
+    } catch (err) {
+      console.error('獲取天氣失敗:', err);
+      // 如果 API 失敗，使用模擬數據作為後備
+      const mockData = {
+        name: location,
+        main: {
+          temp: 15,
+          feels_like: 8,
+        },
+        weather: [{
+          main: 'Windy',
+          description: '風大',
+        }],
+        wind: {
+          speed: 5.5,
+        },
+      };
+      setWeather(mockData);
+      setError(`無法連接到天氣服務: ${err.message}，顯示模擬數據`);
+    } finally {
+      setLoading(false);
+    }
+  }, [location]);
+
+  const fetchForecast = useCallback(async () => {
+    try {
+      const data = await getWeeklyForecast(location);
+      setForecast(data);
+    } catch (err) {
+      console.error('獲取天氣預報失敗:', err);
+      // 使用模擬數據作為後備
+      const mockForecast = generateMockForecast();
+      setForecast(mockForecast);
+    }
+  }, [location, generateMockForecast]);
+
+  useEffect(() => {
+    fetchWeather();
+    fetchForecast();
+  }, [fetchWeather, fetchForecast]);
+
 
   const getCurrentTime = () => {
     const now = new Date();

@@ -6,7 +6,6 @@ export const getOutfitRecommendation = (weather) => {
     return getDefaultOutfit();
   }
 
-  const temp = weather.main.temp;
   const feelsLike = weather.main.feels_like;
   const windSpeed = weather.wind?.speed || 0;
   const weatherMain = weather.weather[0]?.main || 'Clear';
@@ -94,7 +93,6 @@ export const getDetailedOutfitRecommendation = (weather) => {
     };
   }
 
-  const temp = weather.main.temp;
   const feelsLike = weather.main.feels_like;
   const windSpeed = weather.wind?.speed || 0;
   const weatherMain = weather.weather[0]?.main || 'Clear';
