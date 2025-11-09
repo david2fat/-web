@@ -32,7 +32,11 @@ const LOCAL_MEDIA = {
     COOL: {
       type: 'video',
       url: `${PUBLIC_URL}/videos/cool.mp4`,
-      // url: `${PUBLIC_URL}/videos/cool.mp4`,
+      // 如果影片載入失敗，會自動回退到圖片
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/cool.png`,
+      },
     },
   },
   // 女性資源
