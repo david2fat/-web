@@ -35,9 +35,26 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
         setMediaError(false);
       };
       video.onerror = () => {
-        setMediaError(true);
-        setLoading(false);
-        console.warn('影片載入失敗:', config.url);
+        // 如果影片載入失敗，嘗試使用 fallback 圖片
+        if (config.fallback) {
+          console.warn('影片載入失敗，使用備用圖片:', config.url);
+          const img = new Image();
+          img.onload = () => {
+            setMediaConfig(config.fallback);
+            setLoading(false);
+            setMediaError(false);
+          };
+          img.onerror = () => {
+            setMediaError(true);
+            setLoading(false);
+            console.error('備用圖片也載入失敗:', config.fallback.url);
+          };
+          img.src = config.fallback.url;
+        } else {
+          setMediaError(true);
+          setLoading(false);
+          console.warn('影片載入失敗且無備用方案:', config.url);
+        }
       };
       video.src = config.url;
     } else {

@@ -22,7 +22,12 @@ const LOCAL_MEDIA = {
     },
     RAINY: {
       type: 'video',
-      url: `${PUBLIC_URL}/videos/rainy.mp4`,
+      url: `${PUBLIC_URL}/videos/rainy.mp4`, // 注意：文件名包含 .mp4.mp4
+      // 如果影片載入失敗，會自動回退到圖片
+      fallback: {
+        type: 'image',
+        url: `${PUBLIC_URL}/images/rainy.png`,
+      },
     },
     COOL: {
       type: 'image',
