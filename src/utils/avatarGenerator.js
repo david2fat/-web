@@ -30,8 +30,8 @@ const LOCAL_MEDIA = {
       },
     },
     COOL: {
-      type: 'image',
-      url: `${PUBLIC_URL}/images/cool.png`,
+      type: 'video',
+      url: `${PUBLIC_URL}/videos/cool.mp4`,
       // url: `${PUBLIC_URL}/videos/cool.mp4`,
     },
   },
