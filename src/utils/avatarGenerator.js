@@ -1,19 +1,63 @@
 /**
- * 使用本地圖片生成人物全身圖案
+ * 使用本地圖片或影片生成人物全身圖案
  * 圖片存放在 public/images/ 資料夾中
+ * 影片存放在 public/videos/ 資料夾中
  */
 
-// 本地圖片路徑（支持男女不同圖案）
 // 使用 process.env.PUBLIC_URL 確保在開發和生產環境中都能正確載入
 const PUBLIC_URL = process.env.PUBLIC_URL || '';
+
+// 本地媒體資源配置（支持圖片和影片）
+// type: 'image' 或 'video'
+// url: 資源路徑
+const LOCAL_MEDIA = {
+  // 男性資源
+  MALE: {
+    SUNNY: {
+      type: 'image', // 或 'video'
+      url: `${PUBLIC_URL}/images/sunny.png`,
+      // 如果有影片，可以這樣配置：
+      // type: 'video',
+      // url: `${PUBLIC_URL}/videos/sunny.mp4`,
+    },
+    RAINY: {
+      type: 'image',
+      url: `${PUBLIC_URL}/videos/rainy.mp4`,
+      // url: `${PUBLIC_URL}/videos/rainy.mp4`,
+    },
+    COOL: {
+      type: 'image',
+      url: `${PUBLIC_URL}/images/cool.png`,
+      // url: `${PUBLIC_URL}/videos/cool.mp4`,
+    },
+  },
+  // 女性資源
+  FEMALE: {
+    SUNNY: {
+      type: 'image',
+      url: `${PUBLIC_URL}/images/sunny2.png`,
+      // url: `${PUBLIC_URL}/videos/sunny2.mp4`,
+    },
+    RAINY: {
+      type: 'image',
+      url: `${PUBLIC_URL}/images/rainy2.png`,
+      // url: `${PUBLIC_URL}/videos/rainy2.mp4`,
+    },
+    COOL: {
+      type: 'image',
+      url: `${PUBLIC_URL}/images/cool2.png`,
+      // url: `${PUBLIC_URL}/videos/cool2.mp4`,
+    },
+  },
+};
+
+// 向後兼容：保留舊的圖片路徑配置
 const LOCAL_IMAGES = {
-  // 男性圖片
   MALE: {
     SUNNY: `${PUBLIC_URL}/images/sunny.png`,
     RAINY: `${PUBLIC_URL}/images/rainy.png`,
     COOL: `${PUBLIC_URL}/images/cool.png`,
   },
-  // 女性圖片
   FEMALE: {
     SUNNY: `${PUBLIC_URL}/images/sunny2.png`,
     RAINY: `${PUBLIC_URL}/images/rainy2.png`,
@@ -47,32 +91,43 @@ export const OUTFIT_TYPES = {
 };
 
 /**
- * 生成特定穿搭類型的圖片 URL
+ * 生成特定穿搭類型的媒體資源配置
  * @param {string} outfitTypeId - 穿搭類型 ID
  * @param {string} gender - 性別 ('male' 或 'female')
- * @returns {string} 圖片 URL
+ * @returns {Object} 媒體資源配置 { type: 'image'|'video', url: string }
  */
-const generateAvatarUrl = (outfitTypeId, gender = 'male') => {
+const generateAvatarConfig = (outfitTypeId, gender = 'male') => {
   const outfitType = OUTFIT_TYPES[outfitTypeId];
   if (!outfitType) {
     // 預設返回晴天短袖短褲
     const defaultType = OUTFIT_TYPES.SUNNY_SHORTS_SHORT_SLEEVE;
-    const genderImages = gender === 'female' ? LOCAL_IMAGES.FEMALE : LOCAL_IMAGES.MALE;
-    return genderImages[defaultType.imageKey];
+    const genderMedia = gender === 'female' ? LOCAL_MEDIA.FEMALE : LOCAL_MEDIA.MALE;
+    return genderMedia[defaultType.imageKey];
   }
   
-  const genderImages = gender === 'female' ? LOCAL_IMAGES.FEMALE : LOCAL_IMAGES.MALE;
-  return genderImages[outfitType.imageKey];
+  const genderMedia = gender === 'female' ? LOCAL_MEDIA.FEMALE : LOCAL_MEDIA.MALE;
+  return genderMedia[outfitType.imageKey];
 };
 
 /**
- * 生成特定穿搭類型的圖片 URL
+ * 生成特定穿搭類型的媒體資源配置
  * @param {string} outfitTypeId - 穿搭類型 ID
  * @param {string} gender - 性別 ('male' 或 'female')
- * @returns {string} 圖片 URL
+ * @returns {Object} 媒體資源配置 { type: 'image'|'video', url: string }
  */
 export const generateOutfitAvatarUrl = (outfitTypeId, gender = 'male') => {
-  return generateAvatarUrl(outfitTypeId, gender);
+  return generateAvatarConfig(outfitTypeId, gender);
+};
+
+/**
+ * 獲取媒體資源類型（圖片或影片）
+ * @param {string} outfitTypeId - 穿搭類型 ID
+ * @param {string} gender - 性別 ('male' 或 'female')
+ * @returns {string} 'image' 或 'video'
+ */
+export const getOutfitMediaType = (outfitTypeId, gender = 'male') => {
+  const config = generateAvatarConfig(outfitTypeId, gender);
+  return config?.type || 'image';
 };
 
 /**
@@ -158,37 +213,55 @@ export const getOutfitTypeByWeather = (weather) => {
 };
 
 /**
- * 預先下載所有穿搭類型的頭像
+ * 預先載入所有穿搭類型的媒體資源（圖片或影片）
  */
 export const preloadAllOutfitAvatars = async () => {
   const outfitTypes = Object.keys(OUTFIT_TYPES);
   const promises = outfitTypes.map(async (typeKey) => {
     const outfitType = OUTFIT_TYPES[typeKey];
-    const url = generateOutfitAvatarUrl(typeKey);
+    const config = generateOutfitAvatarUrl(typeKey);
     const cacheKey = `avatar_url_${typeKey}`;
     
     // 檢查是否已經緩存
-    const cachedUrl = sessionStorage.getItem(cacheKey);
-    if (cachedUrl) {
-      return { type: typeKey, url: cachedUrl };
+    const cachedConfig = sessionStorage.getItem(cacheKey);
+    if (cachedConfig) {
+      try {
+        return JSON.parse(cachedConfig);
+      } catch {
+        // 如果解析失敗，繼續預載入
+      }
     }
     
     try {
-      // 預先載入圖片
-      const img = new Image();
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = url;
-      });
-      
-      // 緩存 URL
-      sessionStorage.setItem(cacheKey, url);
-      
-      return { type: typeKey, url };
+      if (config.type === 'video') {
+        // 預先載入影片
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        await new Promise((resolve, reject) => {
+          video.onloadedmetadata = resolve;
+          video.onerror = reject;
+          video.src = config.url;
+        });
+        
+        // 緩存配置
+        sessionStorage.setItem(cacheKey, JSON.stringify(config));
+        return { type: typeKey, ...config };
+      } else {
+        // 預先載入圖片
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = config.url;
+        });
+        
+        // 緩存配置
+        sessionStorage.setItem(cacheKey, JSON.stringify(config));
+        return { type: typeKey, ...config };
+      }
     } catch (error) {
       console.warn(`Failed to preload avatar for ${outfitType.name}:`, error);
-      return { type: typeKey, url: null };
+      return { type: typeKey, ...config, error: true };
     }
   });
   

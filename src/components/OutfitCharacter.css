@@ -96,17 +96,32 @@
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-.avatar-image {
+.avatar-image,
+.avatar-media {
   width: 100%;
   height: 100%;
   object-fit: contain;
   animation: fadeIn 0.5s ease-in;
   /* 確保顯示完整人物，包括身體 */
   object-position: center bottom;
-  /* 確保 SVG 完整顯示 */
+  /* 確保完整顯示 */
   display: block;
   max-width: 100%;
   max-height: 100%;
+}
+
+/* 影片特定樣式 */
+.avatar-media[type="video"],
+.avatar-media video {
+  background: transparent;
+}
+
+/* 確保影片也能正確顯示 */
+video.avatar-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .avatar-loading {

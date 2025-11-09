@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './OutfitCharacter.css';
 import { 
   getOutfitTypeByWeather, 
@@ -7,9 +7,10 @@ import {
 } from '../utils/avatarGenerator';
 
 const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
-  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [mediaConfig, setMediaConfig] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
+  const videoRef = useRef(null);
 
   // 組件掛載時預先下載所有穿搭類型
   useEffect(() => {
@@ -17,28 +18,54 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
   }, []);
 
   useEffect(() => {
-    // 根據天氣獲取對應的穿搭類型頭像 URL
+    // 根據天氣獲取對應的穿搭類型媒體配置
     setLoading(true);
-    setImageError(false);
+    setMediaError(false);
     const outfitTypeKey = getOutfitTypeByWeather(weather);
-    const url = generateOutfitAvatarUrl(outfitTypeKey, gender);
+    const config = generateOutfitAvatarUrl(outfitTypeKey, gender);
     
-    // 直接使用 URL，不依賴緩存（因為現在使用本地圖片）
-    // 預先載入圖片以確保載入完成
-    const img = new Image();
-    img.onload = () => {
-      setAvatarUrl(url);
-      setLoading(false);
-      setImageError(false);
-    };
-    img.onerror = () => {
-      // 如果載入失敗，設置錯誤狀態
-      setImageError(true);
-      setLoading(false);
-      console.warn('圖片載入失敗:', url);
-    };
-    img.src = url;
+    // 預先載入媒體資源以確保載入完成
+    if (config.type === 'video') {
+      // 預載入影片
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        setMediaConfig(config);
+        setLoading(false);
+        setMediaError(false);
+      };
+      video.onerror = () => {
+        setMediaError(true);
+        setLoading(false);
+        console.warn('影片載入失敗:', config.url);
+      };
+      video.src = config.url;
+    } else {
+      // 預載入圖片
+      const img = new Image();
+      img.onload = () => {
+        setMediaConfig(config);
+        setLoading(false);
+        setMediaError(false);
+      };
+      img.onerror = () => {
+        setMediaError(true);
+        setLoading(false);
+        console.warn('圖片載入失敗:', config.url);
+      };
+      img.src = config.url;
+    }
   }, [weather, gender]); // 當 weather 或 gender 改變時更新
+
+  // 當媒體配置改變時，如果是影片則自動播放
+  useEffect(() => {
+    if (mediaConfig?.type === 'video' && videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(err => {
+        console.warn('影片自動播放失敗:', err);
+      });
+    }
+  }, [mediaConfig]);
 
   if (!weather) return null;
 
@@ -83,18 +110,32 @@ const OutfitCharacter = ({ weather, gender = 'male', onViewSatellite }) => {
         <div className="character-avatar">
           {loading ? (
             <div className="avatar-loading">載入中...</div>
-          ) : imageError ? (
+          ) : mediaError ? (
             <div className="avatar-fallback">👤</div>
+          ) : mediaConfig?.type === 'video' ? (
+            <video
+              ref={videoRef}
+              src={mediaConfig.url}
+              className="avatar-media"
+              autoPlay
+              loop
+              muted
+              playsInline
+              key={mediaConfig.url}
+              onError={() => {
+                console.error('影片載入錯誤:', mediaConfig.url);
+                setMediaError(true);
+              }}
+            />
           ) : (
             <img 
-              src={avatarUrl} 
+              src={mediaConfig?.url} 
               alt="天氣穿搭角色" 
-              className="avatar-image"
-              key={avatarUrl} // 添加 key 確保圖片更新時重新渲染
+              className="avatar-media"
+              key={mediaConfig?.url}
               onError={() => {
-                // 如果載入失敗，設置錯誤狀態（使用 React 狀態而不是直接操作 DOM）
-                console.error('圖片載入錯誤:', avatarUrl);
-                setImageError(true);
+                console.error('圖片載入錯誤:', mediaConfig?.url);
+                setMediaError(true);
               }}
             />
           )}
