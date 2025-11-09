@@ -22,7 +22,7 @@ const LOCAL_MEDIA = {
     },
     RAINY: {
       type: 'video',
-      url: `${PUBLIC_URL}/videos/rainy.mp4`, // 注意：文件名包含 .mp4.mp4
+      url: `${PUBLIC_URL}/videos/rainy.mp4`, // 正確的文件名應該是 rainy.mp4
       // 如果影片載入失敗，會自動回退到圖片
       fallback: {
         type: 'image',
@@ -227,15 +227,50 @@ export const preloadAllOutfitAvatars = async () => {
         // 預先載入影片
         const video = document.createElement('video');
         video.preload = 'metadata';
-        await new Promise((resolve, reject) => {
-          video.onloadedmetadata = resolve;
-          video.onerror = reject;
-          video.src = config.url;
-        });
-        
-        // 緩存配置
-        sessionStorage.setItem(cacheKey, JSON.stringify(config));
-        return { type: typeKey, ...config };
+        try {
+          await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('影片載入超時'));
+            }, 5000); // 5秒超時
+            
+            video.onloadedmetadata = () => {
+              clearTimeout(timeout);
+              resolve();
+            };
+            video.onerror = (err) => {
+              clearTimeout(timeout);
+              reject(err);
+            };
+            video.src = config.url;
+          });
+          
+          // 緩存配置
+          sessionStorage.setItem(cacheKey, JSON.stringify(config));
+          return { type: typeKey, ...config };
+        } catch (videoError) {
+          // 如果影片載入失敗，嘗試使用 fallback 圖片
+          if (config.fallback && config.fallback.type === 'image') {
+            console.warn(`影片預載入失敗，將使用備用圖片: ${outfitType.name}`);
+            try {
+              const img = new Image();
+              await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = config.fallback.url;
+              });
+              
+              // 緩存 fallback 配置
+              sessionStorage.setItem(cacheKey, JSON.stringify(config.fallback));
+              return { type: typeKey, ...config.fallback, usedFallback: true };
+            } catch (fallbackError) {
+              console.warn(`備用圖片也載入失敗: ${outfitType.name}`, fallbackError);
+              return { type: typeKey, ...config, error: true };
+            }
+          }
+          // 沒有 fallback，返回錯誤標記
+          console.warn(`影片預載入失敗且無備用方案: ${outfitType.name}`, videoError);
+          return { type: typeKey, ...config, error: true };
+        }
       } else {
         // 預先載入圖片
         const img = new Image();
@@ -250,11 +285,26 @@ export const preloadAllOutfitAvatars = async () => {
         return { type: typeKey, ...config };
       }
     } catch (error) {
-      console.warn(`Failed to preload avatar for ${outfitType.name}:`, error);
+      console.warn(`預載入失敗: ${outfitType.name}`, error);
+      // 即使預載入失敗，也返回配置，讓組件自己處理
       return { type: typeKey, ...config, error: true };
     }
   });
   
-  return Promise.all(promises);
+  // 使用 Promise.allSettled 確保即使某些預載入失敗，也不會影響其他資源
+  const results = await Promise.allSettled(promises);
+  
+  // 過濾出成功的結果
+  const successful = results
+    .filter(result => result.status === 'fulfilled')
+    .map(result => result.value);
+  
+  // 記錄失敗的數量
+  const failed = results.filter(result => result.status === 'rejected');
+  if (failed.length > 0) {
+    console.warn(`${failed.length} 個資源預載入失敗，將在需要時動態載入`);
+  }
+  
+  return successful;
 };
 
