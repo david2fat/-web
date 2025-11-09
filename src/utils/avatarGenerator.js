@@ -21,9 +21,8 @@ const LOCAL_MEDIA = {
       // url: `${PUBLIC_URL}/videos/sunny.mp4`,
     },
     RAINY: {
-      type: 'image',
+      type: 'video',
       url: `${PUBLIC_URL}/videos/rainy.mp4`,
-      // url: `${PUBLIC_URL}/videos/rainy.mp4`,
     },
     COOL: {
       type: 'image',
@@ -48,20 +47,6 @@ const LOCAL_MEDIA = {
       url: `${PUBLIC_URL}/images/cool2.png`,
       // url: `${PUBLIC_URL}/videos/cool2.mp4`,
     },
-  },
-};
-
-// 向後兼容：保留舊的圖片路徑配置
-const LOCAL_IMAGES = {
-  MALE: {
-    SUNNY: `${PUBLIC_URL}/images/sunny.png`,
-    RAINY: `${PUBLIC_URL}/images/rainy.png`,
-    COOL: `${PUBLIC_URL}/images/cool.png`,
-  },
-  FEMALE: {
-    SUNNY: `${PUBLIC_URL}/images/sunny2.png`,
-    RAINY: `${PUBLIC_URL}/images/rainy2.png`,
-    COOL: `${PUBLIC_URL}/images/cool2.png`,
   },
 };
 
