@@ -52,23 +52,33 @@ git push -u origin main
 5. 選擇您的 GitHub 倉庫：`david2fat/-web`
 6. Railway 會自動檢測到項目並開始部署
 
-### 步驟 3: 設置環境變量
+### 步驟 3: 設置環境變量 ⚠️ 重要！
+
+**重要提示**：環境變量必須在構建之前設置！React 應用在構建時會將環境變量嵌入到代碼中。
 
 在 Railway 項目頁面：
 
 1. 點擊項目進入項目詳情
-2. 點擊 **"Variables"** 標籤
+2. 點擊 **"Variables"**（變量）標籤
 3. 點擊 **"+ New Variable"** 添加以下環境變量：
 
 #### 必需的环境变量
 
 | 變量名稱 | 值 | 說明 |
 |---------|-----|------|
-| `REACT_APP_WEATHER_API_PROVIDER` | `openweather` 或 `cwb` | 選擇使用的天氣 API |
+| `REACT_APP_WEATHER_API_PROVIDER` | `openweather` | 選擇使用的天氣 API（建議使用 `openweather`） |
 | `REACT_APP_OPENWEATHER_API_KEY` | `b056d2639727215b67d7ed7f02958c67` | OpenWeatherMap API Key |
 | `REACT_APP_CWB_API_KEY` | `CWA-B300F895-3D5E-4C28-B03E-11E9E94CCE39` | 中央氣象署 API Key |
 
-4. 添加完所有變量後，Railway 會自動重新部署
+4. **重要**：添加完所有變量後，Railway 會自動觸發重新構建和部署
+5. 如果已經部署過，請手動觸發重新部署：
+   - 點擊 **"Deployments"** 標籤
+   - 點擊 **"Redeploy"** 或 **"Deploy"** 按鈕
+   - 或者推送一個新的提交到 GitHub 觸發自動部署
+
+#### 驗證環境變量是否設置成功
+
+部署完成後，打開瀏覽器開發者工具（F12），在 Console 中應該不會看到 "API Key 未設置" 的錯誤。
 
 ### 步驟 4: 配置自動部署
 

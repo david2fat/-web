@@ -7,6 +7,13 @@
 export const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY || '';
 export const OPENWEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
+// 台灣中央氣象署 API 配置
+export const CWB_API_KEY = process.env.REACT_APP_CWB_API_KEY || '';
+export const CWB_BASE_URL = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore';
+
+// 選擇使用的 API（'openweather' 或 'cwb'）
+export const WEATHER_API_PROVIDER = process.env.REACT_APP_WEATHER_API_PROVIDER || 'openweather';
+
 // 調試：檢查環境變數是否正確載入
 if (process.env.NODE_ENV === 'development') {
   console.log('環境變數檢查:');
@@ -14,12 +21,15 @@ if (process.env.NODE_ENV === 'development') {
   console.log('REACT_APP_WEATHER_API_PROVIDER:', process.env.REACT_APP_WEATHER_API_PROVIDER || '未設置');
 }
 
-// 台灣中央氣象署 API 配置
-export const CWB_API_KEY = process.env.REACT_APP_CWB_API_KEY || '';
-export const CWB_BASE_URL = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore';
-
-// 選擇使用的 API（'openweather' 或 'cwb'）
-export const WEATHER_API_PROVIDER = process.env.REACT_APP_WEATHER_API_PROVIDER || 'openweather';
+// 生產環境也檢查（但不顯示完整 key）
+if (process.env.NODE_ENV === 'production') {
+  if (!OPENWEATHER_API_KEY && WEATHER_API_PROVIDER === 'openweather') {
+    console.error('⚠️ 警告：REACT_APP_OPENWEATHER_API_KEY 未設置！請在 Railway 的 Variables 中設置環境變量並重新部署。');
+  }
+  if (!CWB_API_KEY && WEATHER_API_PROVIDER === 'cwb') {
+    console.error('⚠️ 警告：REACT_APP_CWB_API_KEY 未設置！請在 Railway 的 Variables 中設置環境變量並重新部署。');
+  }
+}
 
 // 台灣城市名稱對應（用於中央氣象署 API）
 export const CITY_NAME_MAP = {
